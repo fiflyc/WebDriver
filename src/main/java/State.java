@@ -1,0 +1,1 @@
+public enum State {LOGIN, DASHBOARD, ISSUES, NEW_ISSUE, CLOSED}
