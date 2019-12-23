@@ -26,7 +26,7 @@ class CreateIssueTest {
         walker.close();
     }
 
-    private void checkSuccess() {
+    private void checkSuccess(String summary) {
         WebDriver driver = walker.getDriver();
         IssuesPage page = new IssuesPage();
         PageFactory.initElements(driver, page);
@@ -34,7 +34,7 @@ class CreateIssueTest {
         WebDriverWait wait = new WebDriverWait(driver, 10);
         wait.until(_driver -> page.isSuccessful());
 
-        assertTrue(page.isSuccessful());
+        assertTrue(page.isSuccessful() && page.topSummary().equals(summary));
     }
 
     private void checkError(String message) {
@@ -59,13 +59,13 @@ class CreateIssueTest {
     @Test
     void createIssue_OneLineSummaryOneLineDescription_Success() {
         createIssue("Some Summary", "Some Description");
-        checkSuccess();
+        checkSuccess("Some Summary");
     }
 
     @Test
     void createIssue_OneLineSummaryEmptyDescription_Success() {
         createIssue("Some Summary", "");
-        checkSuccess();
+        checkSuccess("Some Summary");
     }
 
     @Test
@@ -77,19 +77,19 @@ class CreateIssueTest {
     @Test
     void createIssue_MultiLineSummary_Success() {
         createIssue("Some\nSummary", "Diamonds are a girl's best friend");
-        checkSuccess();
+        checkSuccess("Some\nSummary");
     }
 
     @Test
     void createIssue_MultiLineDescription_Success() {
         createIssue("Some Summary", "Some\nDescription");
-        checkSuccess();
+        checkSuccess("Some Summary");
     }
 
     @Test
     void createIssue_WhiteSpacesAsSummary_Success() {
         createIssue("  \t", "Some Description");
-        checkSuccess();
+        checkSuccess("  \t");
     }
 
     @Test
@@ -99,7 +99,7 @@ class CreateIssueTest {
             builder.append(i);
         }
         createIssue(builder.toString(), "Some Description");
-        checkSuccess();
+        checkSuccess(builder.toString());
     }
 
     @Test
@@ -109,18 +109,18 @@ class CreateIssueTest {
             builder.append(i);
         }
         createIssue("Some Summary", builder.toString());
-        checkSuccess();
+        checkSuccess("Some Summary");
     }
 
     @Test
     void createIssue_EmojiInSummary_Success() {
         createIssue("Do you see emoji?\uD83E", "Some Description");
-        checkSuccess();  // Actually, I didn't see an emoji
+        checkSuccess("Do you see emoji?\uD83E");  // Actually, I didn't see an emoji
     }
 
     @Test
     void createIssue_EmojiInDescription_Success() {
         createIssue("Some Summary", "Do you see emoji?\uD83E");
-        checkSuccess();  // Actually, I didn't see an emoji
+        checkSuccess("Some Summary");  // Actually, I didn't see an emoji
     }
 }
